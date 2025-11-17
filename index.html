@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Escalas de satisfacción – Fundación APASCOVI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Icono de pestaña -->
+  <link rel="icon" type="image/png" href="img/icono.png">
+  <link rel="apple-touch-icon" href="img/icono.png">
+  <meta name="theme-color" content="#063c7a">
+
+  <style>
+    :root{
+      --bg:#edf1fb;
+      --card:#ffffff;
+      --ink:#0b1220;
+      --muted:#58627a;
+      --brand:#063c7a;
+      --brand-2:#0a61b8;
+      --border:#dfe5fb;
+      --note:#fffaf0;
+      --note-border:#ffe0b2;
+      --ok:#1976d2;
+      --pdf:#d32f2f;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      background:var(--bg);
+      color:var(--ink);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    }
+
+    .wrap{max-width:1100px;margin:0 auto 40px;padding:10px}
+
+    .card{
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:0 8px 20px rgba(0,0,0,.06);
+      border:1px solid var(--border);
+      padding:16px 16px 26px;
+    }
+
+    header{
+      display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+      border-bottom:3px solid var(--border);
+      padding-bottom:12px;margin-bottom:10px;
+    }
+    .logo{width:90px;height:auto;border-radius:8px}
+    .titles{flex:1;min-width:260px}
+    .titles h1{margin:0;font-size:1.9rem;color:#0b3a78;letter-spacing:.3px}
+    .titles h2{margin:4px 0 2px;font-size:1.2rem;color:var(--brand-2);font-weight:800}
+    .titles p{margin:2px 0;font-size:1rem}
+    .titles p.note{font-size:.9rem;font-style:italic;color:#5b6477}
+
+    .box{
+      margin-top:10px;padding:12px;border-radius:12px;
+      background:#f5f7ff;border:1px solid var(--border);
+    }
+    .box h3{margin:0 0 8px;font-size:1rem;color:var(--brand)}
+    .grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 14px;
+    }
+    label{font-size:.9rem;font-weight:700;color:#0f1a33;display:flex;flex-direction:column;gap:4px}
+    select,input[type="text"],textarea{
+      border:1px solid #cbd4f1;border-radius:10px;padding:8px 10px;font-size:.98rem;background:#fff;
+      width:100%;
+    }
+    .hint{font-size:.82rem;color:#5a6170;margin-top:2px;font-weight:400}
+
+    .instructions{
+      margin-top:14px;padding:12px;border-radius:12px;
+      background:var(--note);border:1px solid var(--note-border);font-size:.98rem
+    }
+    .instructions ul{margin:6px 0 0 18px;padding:0}
+    .instructions li{margin:6px 0}
+
+    .section-title{margin:18px 0 6px;font-size:1.05rem;font-weight:800;color:var(--brand)}
+    .q{
+      margin:16px 0 12px;padding:12px;border-radius:14px;
+      background:#f6f8ff;border:1px solid #d9dff5;
+    }
+    .q-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+    .q-text{margin:0;font-size:1.05rem;font-weight:700;flex:1;min-width:220px}
+    .faces{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-start;margin-top:6px}
+
+    .opt{display:inline-flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;user-select:none}
+    .opt input{display:none}
+    .face{
+      width:74px;height:74px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+      font-size:34px;border:3px solid transparent;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.08);
+      transition:.12s transform,.12s box-shadow,.12s border-color;
+    }
+    .opt:hover .face{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.12)}
+    .opt input:checked + .face{border-color:#e53935;box-shadow:0 0 0 4px rgba(229,57,53,.18)}
+    .cap{font-size:.83rem;font-weight:700;min-width:6.4rem;text-align:center;color:#102037}
+
+    .f1{background:#fecaca} .f2{background:#fee1c7} .f3{background:#fef3c7}
+    .f4{background:#c9f6d8} .f5{background:#65f0a7} .f6,.f7{background:#e8ebf4}
+
+    .comments{margin-top:14px}
+    .comments h3{margin:0 0 8px;font-size:1.05rem;font-weight:800;color:#0b1220}
+    .comments label{font-size:1rem;font-weight:700;margin-bottom:6px;color:#0b1220}
+    #obs{width:100%;min-height:180px;resize:vertical;background:#fff}
+
+    .buttons{
+      margin-top:20px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center
+    }
+    .btn{
+      border:none;border-radius:999px;padding:12px 22px;min-width:240px;
+      font-weight:800;font-size:1rem;color:#fff;cursor:pointer
+    }
+    .btn.pdf{background:var(--pdf)}
+    .btn.csv{background:var(--ok)}
+
+    @media (max-width:640px){
+      .logo{width:72px}
+      .face{width:68px;height:68px;font-size:30px}
+      .btn{min-width:100%}
+    }
+
+    @media print{
+      .buttons{display:none}
+      .q{page-break-inside:avoid}
+      body{background:#fff}
+      .wrap{padding:0}
+      .card{box-shadow:none;border:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+
+      <header>
+        <img src="img/logo.png" alt="Fundación APASCOVI" class="logo"
+             onerror="this.src='img/logo.jpg'; this.onerror=null;">
+        <div class="titles">
+          <h1>Fundación APASCOVI</h1>
+          <h2>Tu satisfacción nos importa</h2>
+          <p><strong>Escalas de valoración de la satisfacción para los centros de atención diurna.</strong></p>
+          <p class="note"><em>(*) Conforme a RESOLUCIÓN 4258/2025, de 1 de octubre, de la Dirección General de Evaluación, Calidad e Innovación.</em></p>
+          <p>Lee las preguntas con calma, mira los pictogramas y elige la respuesta que mejor se ajusta a lo que piensas.</p>
+        </div>
+      </header>
+
+      <section class="box">
+        <h3>Datos del centro y de la persona</h3>
+        <div class="grid">
+          <label>Nombre del centro
+            <select id="centro">
+              <option value="">Selecciona una opción…</option>
+              <option value="CENTRO DE DÍA">CENTRO DE DÍA</option>
+              <option value="COFOIL VILLALBA">COFOIL VILLALBA</option>
+              <option value="COFOIL COLMENAREJO">COFOIL COLMENAREJO</option>
+            </select>
+          </label>
+
+          <label>Código persona usuaria
+            <input type="text" id="codigo" placeholder="Ej.: A123">
+          </label>
+
+          <label>Años que llevas en el centro
+            <select id="anios"></select>
+          </label>
+
+          <label>Meses que llevas en el centro
+            <select id="meses"></select>
+            <span class="hint">Si has contestado 0 años, indica aquí cuántos meses llevas.</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="instructions">
+        <strong>Instrucciones:</strong>
+        <ul>
+          <li>Marca <strong>una única opción</strong> por pregunta.</li>
+          <li>La escala es: <strong>1</strong> Muy insatisfecho/a · <strong>2</strong> Insatisfecho/a · <strong>3</strong> Ni satisfecho/a ni insatisfecho/a · <strong>4</strong> Satisfecho/a · <strong>5</strong> Muy satisfecho/a · <strong>No lo sé</strong> · <strong>Pref. no contestar</strong>.</li>
+          <li>Al final tienes un cuadro para escribir <strong>observaciones</strong> si quieres.</li>
+        </ul>
+      </section>
+
+      <div id="qs"></div>
+
+      <section class="comments">
+        <h3>Valoración general – comentario libre</h3>
+        <label for="obs">¿Quieres añadir alguna sugerencia u opinión?</label>
+        <textarea id="obs"></textarea>
+      </section>
+
+      <div class="buttons">
+        <button class="btn pdf" type="button" onclick="descargarPDF()">Descargar encuesta en PDF</button>
+        <button class="btn csv" type="button" onclick="descargarCSV()">Descargar Excel</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+const ESCALA = [
+  {v:"1",  t:"Muy insatisfecho/a", e:"😡", c:"f1"},
+  {v:"2",  t:"Insatisfecho/a",     e:"☹️", c:"f2"},
+  {v:"3",  t:"Ni satisfecho/a ni insatisfecho/a", e:"😐", c:"f3"},
+  {v:"4",  t:"Satisfecho/a",       e:"🙂", c:"f4"},
+  {v:"5",  t:"Muy satisfecho/a",   e:"😄", c:"f5"},
+  {v:"NS", t:"No lo sé",           e:"🤔", c:"f6"},
+  {v:"PNC",t:"Pref. no contestar", e:"🤐", c:"f7"},
+];
+
+const PREGUNTAS = [
+  {id:"Q1", block:"ENTORNO FÍSICO: Las instalaciones del centro y su entorno",  text:"1. El lugar donde está ubicado el centro (por el entorno y sus vistas)."},
+  {id:"Q2", block:"ENTORNO FÍSICO: Las instalaciones del centro y su entorno",  text:"2. La comodidad de las zonas comunes (salón, comedor, aulas de terapia, etc.) y el mobiliario del centro, para moverte sin dificultad."},
+  {id:"Q3", block:"ENTORNO FÍSICO: Las instalaciones del centro y su entorno",  text:"3. La limpieza y el cuidado del centro."},
+  {id:"Q4", block:"ENTORNO FÍSICO: Las instalaciones del centro y su entorno",  text:"4. La adecuación y confortabilidad del transporte colectivo al centro."},
+  {id:"Q5", block:"ENTORNO FÍSICO: Las instalaciones del centro y su entorno",  text:"5. La adecuación de los espacios para interactuar con los demás (permanencia, uso, mobiliario, accesibilidad, etc.)."},
+  {id:"Q6", block:"ENTORNO FÍSICO: Las instalaciones del centro y su entorno",  text:"6. El acceso a Internet en el centro."},
+
+  {id:"Q7",  block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"7. La rapidez con que te atienden ante una necesidad (por ejemplo: una urgencia, cambio de pañal, caída, dolor, etc.)."},
+  {id:"Q8",  block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"8. La rotación o el cambio de las personas que te atienden habitualmente."},
+  {id:"Q9",  block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"9. La atención y los cuidados que recibes en base a tus necesidades."},
+  {id:"Q10", block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"10. La calidad de la comida y bebida que recibes en el centro (sabor, cantidad, variedad, etc.)."},
+  {id:"Q11", block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"11. El asesoramiento y las explicaciones que recibes sobre en qué consiste tu plan de atención y apoyo en el centro."},
+  {id:"Q12", block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"12. La ayuda que recibes en tu higiene personal."},
+  {id:"Q13", block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"13. La profesionalidad en su trabajo de las personas que te atienden."},
+  {id:"Q14", block:"ATENCIÓN Y CUIDADOS PERSONALIZADOS: Cómo te atienden y cuidan en el centro", text:"14. El grado en el que el personal tiene en cuenta tus preferencias."},
+
+  {id:"Q15", block:"RELACIONES SOCIALES Y PARTICIPACIÓN: Cómo te relacionas con los demás y participas en el centro", text:"15. Las oportunidades que tienes para compartir momentos con otras personas usuarias del centro."},
+  {id:"Q16", block:"RELACIONES SOCIALES Y PARTICIPACIÓN: Cómo te relacionas con los demás y participas en el centro", text:"16. Las facilidades que te ofrece el centro, para mantener el contacto con tu familia y amistades."},
+  {id:"Q17", block:"RELACIONES SOCIALES Y PARTICIPACIÓN: Cómo te relacionas con los demás y participas en el centro", text:"17. Las oportunidades para ser escuchado/a y conversar con el personal del centro."},
+  {id:"Q18", block:"RELACIONES SOCIALES Y PARTICIPACIÓN: Cómo te relacionas con los demás y participas en el centro", text:"18. Tu participación en las decisiones sobre aspectos importantes como horarios, alimentación y actividades."},
+  {id:"Q19", block:"RELACIONES SOCIALES Y PARTICIPACIÓN: Cómo te relacionas con los demás y participas en el centro", text:"19. El grado en el que las actividades en el centro se adaptan a lo que te gusta hacer."},
+
+  {id:"Q20", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"20. La amabilidad y respeto mostrados por el personal, en el trato que recibes en el centro."},
+  {id:"Q21", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"21. El respeto mostrado por el personal del centro, a tus costumbres y a la manera en que te gusta hacer las cosas."},
+  {id:"Q22", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"22. Tu estado físico desde que estás en el centro."},
+  {id:"Q23", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"23. Tu estado de ánimo desde que estás en el centro."},
+  {id:"Q24", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"24. El entretenimiento y la adecuación de las actividades que se llevan a cabo en el centro."},
+  {id:"Q25", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"25. El respeto que mantiene el personal del centro a tu privacidad e intimidad."},
+  {id:"Q26", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"26. El respeto que mantiene el personal del centro a tus decisiones personales."},
+  {id:"Q27", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"27. Tu sensación de seguridad dentro del centro."},
+  {id:"Q28", block:"BIENESTAR, DIGNIDAD Y DERECHOS: Cómo te sientes", text:"28. La manera en la que se han solucionado las incidencias que has tenido en el centro."},
+
+  {id:"Q29", block:"VALORACIÓN GENERAL", text:"29. Tu experiencia en el centro."},
+  {id:"Q30", block:"VALORACIÓN GENERAL", text:"30. ¿Recomendarías este centro a amistades o familia?"}
+];
+
+const cont = document.getElementById('qs');
+let bloqueActual = "";
+
+PREGUNTAS.forEach(q=>{
+  if(q.block !== bloqueActual){
+    bloqueActual = q.block;
+    const h = document.createElement('p');
+    h.className = 'section-title';
+    h.textContent = bloqueActual;
+    cont.appendChild(h);
+  }
+
+  const box = document.createElement('section');
+  box.className = 'q';
+  box.dataset.qid = q.id;
+
+  const head = document.createElement('div');
+  head.className = 'q-head';
+
+  const pt = document.createElement('p');
+  pt.className = 'q-text';
+  pt.textContent = q.text;
+
+  head.appendChild(pt);
+  box.appendChild(head);
+
+  const faces = document.createElement('div');
+  faces.className = 'faces';
+
+  ESCALA.forEach(s=>{
+    const lab = document.createElement('label');
+    lab.className = 'opt';
+
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.name = q.id;
+    radio.value = s.v;
+
+    const f = document.createElement('span');
+    f.className = 'face '+s.c;
+    f.textContent = s.e;
+    f.title = s.t;
+
+    const cap = document.createElement('span');
+    cap.className = 'cap';
+    cap.textContent = (s.v === "NS" || s.v === "PNC") ? s.t : `${s.v} · ${s.t}`;
+
+    lab.appendChild(radio);
+    lab.appendChild(f);
+    lab.appendChild(cap);
+    faces.appendChild(lab);
+  });
+
+  box.appendChild(faces);
+  cont.appendChild(box);
+});
+
+/* ======= AÑOS / MESES ======= */
+(function fillYearsMonths(){
+  const selA = document.getElementById('anios');
+  const selM = document.getElementById('meses');
+  for(let i=0;i<=40;i++){
+    const o=document.createElement('option');
+    o.value=String(i); o.textContent=String(i);
+    selA.appendChild(o);
+  }
+  // ⬇️ CAMBIO: quitamos el 12 (0..11)
+  for(let m=0;m<=11;m++){
+    const o=document.createElement('option');
+    o.value=String(m); o.textContent=String(m);
+    selM.appendChild(o);
+  }
+})();
+
+/* ======= Utilidades ======= */
+function faltanRespuestas(){
+  const todas = document.querySelectorAll('.q');
+  for(const q of todas){
+    const marcado = q.querySelector('input[type="radio"]:checked');
+    if(!marcado) return true;
+  }
+  return false;
+}
+
+function recogerDatos(){
+  const centro = document.getElementById('centro').value || "";
+  const codigo = document.getElementById('codigo').value || "";
+  const anios  = document.getElementById('anios').value || "";
+  const meses  = document.getElementById('meses').value || "";
+  const obs    = document.getElementById('obs').value || "";
+
+  const respuestas = [];
+  document.querySelectorAll('.q').forEach((q,idx)=>{
+    const sel = q.querySelector('input[type="radio"]:checked');
+    const val = sel ? sel.value : "";
+    const etiqueta = sel ? ESCALA.find(e => e.v===val).t : "";
+    respuestas.push({n: idx+1, id: q.dataset.qid, texto: PREGUNTAS[idx].text, valor: val, etiqueta});
+  });
+
+  return {centro,codigo,anios,meses,obs,respuestas};
+}
+
+function descargarCSV(){
+  if(faltanRespuestas()){
+    if(!confirm("Hay preguntas sin contestar. ¿Quieres descargar igualmente el Excel?")){
+      return;
+    }
+  }
+  const d = recogerDatos();
+
+  const headers = ["Centro","Código persona usuaria","Años en el centro","Meses en el centro","Observaciones"];
+  const values  = [d.centro,d.codigo,d.anios,d.meses,d.obs];
+
+  d.respuestas.forEach((r,i)=>{
+    headers.push(`P${i+1}`);
+    values.push(r.valor ? `${r.valor} - ${r.etiqueta}` : "");
+  });
+
+  const enc = s => `"${String(s).replace(/"/g,'""')}"`;
+  const csv = headers.join(';') + "\n" + values.map(enc).join(';');
+
+  const blob = new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = "encuesta_apascovi_anexoII.csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function descargarPDF(){
+  if(faltanRespuestas()){
+    if(!confirm("Hay preguntas sin contestar. ¿Quieres generar el PDF igualmente?")) return;
+  }
+  window.print();
+}
+</script>
+</body>
+</html>
+
+
